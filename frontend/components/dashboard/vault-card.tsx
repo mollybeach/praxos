@@ -19,9 +19,10 @@ import { getUSDCAddress, getUSDCAbi } from "@/lib/contracts"
 interface VaultCardProps {
   vault: Vault
   index: number
+  initialAmount?: string
 }
 
-export function VaultCard({ vault, index }: VaultCardProps) {
+export function VaultCard({ vault, index, initialAmount }: VaultCardProps) {
   const { address: userAddress, isConnected } = useAccount()
   // Use vaultAddress from API response if available, otherwise check if id is an address
   const vaultAddress = vault.vaultAddress?.startsWith("0x") 
@@ -30,8 +31,15 @@ export function VaultCard({ vault, index }: VaultCardProps) {
     ? (vault.id as `0x${string}`) 
     : undefined
   
-  const [depositAmount, setDepositAmount] = useState("")
+  const [depositAmount, setDepositAmount] = useState(initialAmount || "")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  
+  // Update deposit amount when dialog opens and initialAmount is provided
+  useEffect(() => {
+    if (isDialogOpen && initialAmount) {
+      setDepositAmount(initialAmount)
+    }
+  }, [isDialogOpen, initialAmount])
   
   const { approve, isPending: isApproving, isSuccess: isApproved, hash: approveHash } = useApproveUSDC(vaultAddress)
   const { allowance, isLoading: isLoadingAllowance, refetch: refetchAllowance } = useUSDCAllowance(userAddress, vaultAddress)

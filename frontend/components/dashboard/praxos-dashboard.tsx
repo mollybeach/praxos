@@ -507,7 +507,7 @@ export function PraxosDashboard() {
                     className="animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <VaultCard vault={vault} index={index} />
+                    <VaultCard vault={vault} index={index} initialAmount={amount} />
                   </div>
                 ))}
               </div>

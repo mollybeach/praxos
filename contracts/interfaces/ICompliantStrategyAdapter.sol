@@ -46,5 +46,12 @@ interface ICompliantStrategyAdapter {
         address rwaToken,
         address vaultAddress
     ) external returns (uint256 rwaAmount);
+
+    /**
+     * @notice Whitelist a vault to hold a specific RWA token
+     * @param rwaToken The ERC-3643 token address
+     * @param vaultAddress The vault contract address
+     */
+    function whitelistVault(address rwaToken, address vaultAddress) external;
 }
 

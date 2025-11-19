@@ -449,10 +449,30 @@ async function main() {
         console.warn("⚠️ Failed to save RewardsModule ABI:", error.message);
     }
 
-    // Set rewards module on the compliant vault
-    const compliantVault = await ethers.getContractAt("PraxosVaultCompliant", compliantVaultAddress, deployer);
-    await compliantVault.setRewardsModule(rewardsModuleAddress);
-    console.log("✅ Rewards module set on compliant vault\n");
+    // Set rewards module on the compliant vault (optional - skip if factory owns the vault)
+    try {
+        const compliantVault = await ethers.getContractAt("PraxosVaultCompliant", compliantVaultAddress, deployer);
+        const vaultOwner = await compliantVault.owner();
+
+        // If factory owns the vault, we can't set it directly (would need factory to have a function for this)
+        if (vaultOwner.toLowerCase() === factoryCompliantAddress.toLowerCase()) {
+            console.log("⚠️  Vault is owned by factory, skipping rewards module setup");
+            console.log(`   Rewards module deployed at: ${rewardsModuleAddress}`);
+            console.log("   (Can be set later by transferring vault ownership or adding factory function)\n");
+        } else if (vaultOwner.toLowerCase() === deployer.address.toLowerCase()) {
+            // Deployer owns the vault directly
+            await compliantVault.setRewardsModule(rewardsModuleAddress);
+            console.log("✅ Rewards module set on compliant vault\n");
+        } else {
+            console.log(`⚠️  Vault ownership is ${vaultOwner}, deployer cannot set rewards module`);
+            console.log(`   Rewards module deployed at: ${rewardsModuleAddress}`);
+            console.log("   (Rewards module can be set later by the vault owner)\n");
+        }
+    } catch (error) {
+        console.warn("⚠️  Failed to set rewards module on compliant vault:", error.message);
+        console.log(`   Rewards module deployed at: ${rewardsModuleAddress}`);
+        console.log("   (This is optional - rewards module can be set later by the vault owner)\n");
+    }
 
     // ==================== STEP 9: Log Deployment Data ====================
     printStepHeader("9️⃣ Logging Deployment Data");

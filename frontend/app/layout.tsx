@@ -1,35 +1,43 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { Providers } from "./providers";
+import type { Metadata } from 'next'
+import { Geist, Geist_Mono } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import '@rainbow-me/rainbowkit/styles.css'
+import './globals.css'
+import { Web3Providers } from '@/components/web3-providers'
+import { ThemeProvider } from '@/components/theme-provider'
 
-const inter = Inter({ subsets: ["latin"] });
+const _geist = Geist({ subsets: ["latin"] });
+const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Praxos - AI-Generated ERC-4626 Vaults",
-  description: "AI-powered vault generation for Real-World Asset tokenization",
+  title: 'Praxos',
+  description: 'Praxos, liquidity investment layer for TradFi, operated on Rayls network.',
   icons: {
-    icon: '/praxos_favicon.jpeg',
-    apple: '/praxos_favicon.jpeg',
+    icon: [
+      {
+        url: '/praxos-icon.svg',
+        type: 'image/svg+xml',
+      },
+    ],
+    apple: '/praxos-icon.svg',
   },
-};
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="icon" href="/praxos_favicon.jpeg" />
-        <link rel="apple-touch-icon" href="/praxos_favicon.jpeg" />
-      </head>
-      <body className={inter.className}>
-        <Providers>
-          {children}
-        </Providers>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`font-sans antialiased`} suppressHydrationWarning>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          <Web3Providers>
+            {children}
+          </Web3Providers>
+        </ThemeProvider>
+        <Analytics />
       </body>
     </html>
-  );
+  )
 }

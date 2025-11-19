@@ -1,20 +1,21 @@
-import { PraxosDashboard } from "@/components/dashboard/praxos-dashboard"
+import { PortfolioPage } from "@/components/pages/PortfolioPage"
 import { AppSidebar } from "@/components/dashboard/app-sidebar"
 import { AppHeader } from "@/components/dashboard/app-header"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 
-export default function Page() {
+export default function Portfolio() {
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-screen w-full bg-background dark">
         <AppSidebar />
         <SidebarInset className="bg-background">
-          <AppHeader title="Dashboard" />
+          <AppHeader title="Portfolio" />
           <main className="flex flex-1 flex-col gap-4 p-4 pt-0">
-            <PraxosDashboard />
+            <PortfolioPage />
           </main>
         </SidebarInset>
       </div>
     </SidebarProvider>
   )
 }
+

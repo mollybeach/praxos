@@ -1,0 +1,157 @@
+{
+  "vaults": [
+    {
+      "id": "1",
+      "name": "Global Sovereign Yield Alpha",
+      "description": "Diversified exposure to short-term government bonds across G7 nations, optimized for yield and currency stability.",
+      "apr": 5.42,
+      "matchPercentage": 98,
+      "isNew": true,
+      "vaultAddress": "0x1234567890123456789012345678901234567890",
+      "assets": [
+        {
+          "name": "US Treasury Bill 3M",
+          "type": "bond",
+          "provider": "BlackRock",
+          "country": "USA",
+          "rating": "AAA",
+          "description": "Short-term US government debt obligation backed by the full faith and credit of the US government."
+        },
+        {
+          "name": "UK Gilt 1Y",
+          "type": "bond",
+          "provider": "Vanguard",
+          "country": "UK",
+          "rating": "AA",
+          "description": "British government bonds denominated in GBP."
+        },
+        {
+          "name": "German Bund 6M",
+          "type": "bond",
+          "provider": "Invesco",
+          "country": "Germany",
+          "rating": "AAA",
+          "description": "Federal Republic of Germany government debt."
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Real Estate Income Plus",
+      "description": "High-yield REIT strategy focusing on commercial and industrial properties in emerging tech hubs.",
+      "apr": 8.15,
+      "matchPercentage": 94,
+      "vaultAddress": "0x2345678901234567890123456789012345678901",
+      "assets": [
+        {
+          "name": "Vanguard Real Estate ETF",
+          "type": "reit",
+          "provider": "Vanguard",
+          "country": "USA",
+          "rating": "A",
+          "description": "Invests in stocks issued by real estate investment trusts (REITs)."
+        },
+        {
+          "name": "Prologis Industrial Fund",
+          "type": "reit",
+          "provider": "J.P. Morgan",
+          "country": "Global",
+          "rating": "A+",
+          "description": "Logistics real estate solutions focused on high-barrier markets."
+        },
+        {
+          "name": "Digital Realty Trust",
+          "type": "reit",
+          "provider": "BlackRock",
+          "country": "USA",
+          "rating": "BBB+",
+          "description": "Data center real estate investment trust."
+        },
+        {
+          "name": "Simon Property Group",
+          "type": "reit",
+          "provider": "Fidelity",
+          "country": "USA",
+          "rating": "A-",
+          "description": "Retail real estate ownership and management."
+        },
+        {
+          "name": "Public Storage",
+          "type": "reit",
+          "provider": "State Street",
+          "country": "USA",
+          "rating": "A",
+          "description": "Self-storage facility real estate investment trust."
+        },
+        {
+          "name": "Realty Income Corp",
+          "type": "reit",
+          "provider": "Invesco",
+          "country": "USA",
+          "rating": "A-",
+          "description": "Commercial real estate with long-term net lease agreements."
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Tech Innovation Debt Fund",
+      "description": "Senior secured lending to late-stage venture-backed technology companies with strong recurring revenue.",
+      "apr": 11.2,
+      "matchPercentage": 88,
+      "vaultAddress": "0x3456789012345678901234567890123456789012",
+      "assets": [
+        {
+          "name": "Silicon Valley Debt Fund IV",
+          "type": "fund",
+          "provider": "Goldman Sachs",
+          "country": "USA",
+          "rating": "BBB",
+          "description": "Private credit facility for Series C+ SaaS companies."
+        },
+        {
+          "name": "Horizon Tech Lending",
+          "type": "fund",
+          "provider": "BlackRock",
+          "country": "USA",
+          "rating": "BBB-",
+          "description": "Venture debt financing for life science and healthcare tech."
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Emerging Markets Green Bond",
+      "description": "ESG-focused sovereign and corporate debt from high-growth developing economies.",
+      "apr": 6.85,
+      "matchPercentage": 82,
+      "vaultAddress": "0x4567890123456789012345678901234567890123",
+      "assets": [
+        {
+          "name": "Brazil Green Energy Bond",
+          "type": "commodity",
+          "provider": "J.P. Morgan",
+          "country": "Brazil",
+          "rating": "BB+",
+          "description": "Financing for renewable energy infrastructure projects."
+        },
+        {
+          "name": "India Solar Infrastructure",
+          "type": "commodity",
+          "provider": "Fidelity",
+          "country": "India",
+          "rating": "BBB-",
+          "description": "Solar park development bonds backed by government PPAs."
+        },
+        {
+          "name": "Vietnam Wind Power",
+          "type": "commodity",
+          "provider": "Vanguard",
+          "country": "Vietnam",
+          "rating": "BB",
+          "description": "Offshore wind farm development financing."
+        }
+      ]
+    }
+  ]
+}

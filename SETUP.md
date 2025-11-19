@@ -2,29 +2,28 @@
 
 ## Prerequisites
 
-- [Foundry](https://book.getfoundry.sh/getting-started/installation) (for smart contracts)
+- [Node.js 18+](https://nodejs.org/) (for smart contracts with Hardhat)
 - [Python 3.9+](https://www.python.org/downloads/) (for off-chain components)
-- [Node.js](https://nodejs.org/) (optional, for frontend)
 - MetaMask or compatible Web3 wallet
 
 ## Installation
 
-### 1. Install Foundry
+### 1. Install Node.js
 
 ```bash
-curl -L https://foundry.paradigm.xyz | bash
-foundryup
+# Install Node.js 18+ from https://nodejs.org/
+node --version  # Should be 18.0.0 or higher
+npm --version
 ```
 
 ### 2. Install Dependencies
 
 ```bash
-# Install OpenZeppelin contracts
+# Install Hardhat and all dependencies (including OpenZeppelin)
 make install
 
 # Or manually:
-forge install OpenZeppelin/openzeppelin-contracts
-forge install transmissions11/solmate
+npm install
 ```
 
 ### 3. Set Up Python Environment
@@ -52,14 +51,14 @@ FACTORY_ADDRESS=0x...  # After deployment
 
 ```bash
 make build
-# Or: forge build
+# Or: npx hardhat compile
 ```
 
 ### Run Tests
 
 ```bash
 make test
-# Or: forge test -vvv
+# Or: npx hardhat test
 ```
 
 ## Deployment
@@ -77,10 +76,9 @@ make test
 3. Deploy contracts:
 
 ```bash
-forge script script/Deploy.s.sol:DeployScript \
-  --rpc-url rayls_devnet \
-  --broadcast \
-  --verify
+# Make sure .env file has PRIVATE_KEY and RAYLS_RPC_URL set
+make deploy
+# Or: npx hardhat run scripts/deploy.js --network rayls_devnet
 ```
 
 4. Update `.env` with deployed addresses
@@ -153,10 +151,10 @@ praxos/
 │   │   └── MockERC3643.sol       # Mock RWA tokens for testing
 │   ├── Praxos.sol             # ERC-4626 vault implementation
 │   └── PraxosFactory.sol     # Vault factory
-├── script/
-│   └── Deploy.s.sol              # Deployment script
-├── src/test/
-│   └── Praxos.t.sol         # Tests
+├── scripts/
+│   └── deploy.js                  # Hardhat deployment script
+├── test/
+│   └── Praxos.test.js             # Hardhat/Mocha tests
 ├── offchain/
 │   ├── simulation/
 │   │   └── risk_model.py         # Risk simulation layer
@@ -181,9 +179,10 @@ praxos/
 
 ### Contract Compilation Errors
 
-- Ensure Foundry is up to date: `foundryup`
-- Check Solidity version matches `foundry.toml`
-- Verify dependencies are installed: `forge install`
+- Ensure Node.js is version 18 or higher: `node --version`
+- Check Solidity version matches `hardhat.config.js`
+- Verify dependencies are installed: `npm install`
+- Clear cache and rebuild: `npx hardhat clean && npx hardhat compile`
 
 ### Python Import Errors
 

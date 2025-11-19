@@ -1,18 +1,18 @@
 .PHONY: install build test deploy clean
 
 install:
-	forge install OpenZeppelin/openzeppelin-contracts
-	forge install transmissions11/solmate
+	npm install
 
 build:
-	forge build
+	npx hardhat compile
 
 test:
-	forge test -vvv
+	npx hardhat test
 
 deploy:
-	forge script script/Deploy.s.sol:DeployScript --rpc-url rayls_devnet --broadcast --verify
+	npx hardhat run scripts/deploy.js --network rayls_devnet
 
 clean:
-	forge clean
+	npx hardhat clean
+	rm -rf node_modules
 

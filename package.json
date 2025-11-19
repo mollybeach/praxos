@@ -1,0 +1,31 @@
+{
+    "name": "praxos",
+    "version": "1.0.0",
+    "description": "AI-Generated ERC-4626 Vaults Built From ERC-3643 Real-World Assets",
+    "main": "index.js",
+    "scripts": {
+        "compile": "hardhat compile",
+        "test": "hardhat test",
+        "deploy": "hardhat run scripts/deploy.js --network rayls_devnet",
+        "node": "hardhat node",
+        "clean": "hardhat clean"
+    },
+    "keywords": [
+        "ethereum",
+        "defi",
+        "vaults",
+        "rwa",
+        "erc-4626",
+        "erc-3643"
+    ],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+        "@openzeppelin/contracts": "^5.1.0",
+        "hardhat": "^2.22.0"
+    },
+    "dependencies": {
+        "dotenv": "^16.4.5"
+    }
+}

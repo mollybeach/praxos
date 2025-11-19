@@ -5,21 +5,20 @@ Get up and running with Praxos in 5 minutes.
 ## Prerequisites Check
 
 ```bash
-# Check Foundry
-forge --version
+# Check Node.js (required for Hardhat)
+node --version  # Should be 18.0.0 or higher
+npm --version
 
 # Check Python
 python3 --version
-
-# Check Node (optional, for frontend)
-node --version
 ```
 
 ## Step 1: Install Dependencies
 
 ```bash
-# Install Foundry dependencies
+# Install Hardhat and dependencies
 make install
+# Or: npm install
 
 # Set up Python environment
 cd offchain
@@ -43,14 +42,13 @@ cd ..
 ## Step 3: Deploy Contracts
 
 ```bash
-# Set your private key (or use .env file)
-export PRIVATE_KEY=your_private_key_here
+# Create .env file with your private key
+echo "PRIVATE_KEY=your_private_key_here" > .env
+echo "RAYLS_RPC_URL=https://devnet-rpc.rayls.com" >> .env
 
 # Deploy to Rayls devnet
-forge script script/Deploy.s.sol:DeployScript \
-  --rpc-url https://devnet-rpc.rayls.com \
-  --broadcast \
-  --verify
+make deploy
+# Or: npx hardhat run scripts/deploy.js --network rayls_devnet
 ```
 
 After deployment, note the addresses:
@@ -146,8 +144,9 @@ config = generator.get_vault_config_for_deployment(
 ## Testing
 
 ```bash
-# Run Solidity tests
-forge test -vvv
+# Run Hardhat tests
+make test
+# Or: npx hardhat test
 
 # Test Python components
 cd offchain
@@ -158,7 +157,7 @@ python vault_generator.py  # Run example
 ## Troubleshooting
 
 ### "Source not found" errors
-Run `make install` to install OpenZeppelin contracts.
+Run `make install` or `npm install` to install dependencies including OpenZeppelin contracts.
 
 ### Python import errors
 Ensure you're in the virtual environment: `source offchain/venv/bin/activate`

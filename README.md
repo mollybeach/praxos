@@ -222,24 +222,33 @@ See [QUICKSTART.md](./QUICKSTART.md) for a 5-minute setup guide.
 
 ### Installation
 
-1. **Install Foundry:**
+1. **Install Node.js and npm:**
    ```bash
-   curl -L https://foundry.paradigm.xyz | bash
-   foundryup
+   # Install Node.js 18+ from https://nodejs.org/
+   node --version  # Should be 18.0.0 or higher
    ```
 
 2. **Install Dependencies:**
    ```bash
+   # Install Hardhat and dependencies
    make install
+   # Or manually: npm install
+   
+   # Set up Python environment for offchain components
    cd offchain && python3 -m venv venv && source venv/bin/activate
    pip install -r requirements.txt
+   cd ..
    ```
 
 3. **Deploy to Rayls Devnet:**
    ```bash
-   forge script script/Deploy.s.sol:DeployScript \
-     --rpc-url https://devnet-rpc.rayls.com \
-     --broadcast
+   # Set your private key in .env file
+   echo "PRIVATE_KEY=your_private_key_here" > .env
+   echo "RAYLS_RPC_URL=https://devnet-rpc.rayls.com" >> .env
+   
+   # Deploy contracts
+   make deploy
+   # Or manually: npx hardhat run scripts/deploy.js --network rayls_devnet
    ```
 
 See [SETUP.md](./SETUP.md) for detailed setup instructions.
@@ -255,10 +264,10 @@ praxos/
 │   │   └── MockERC3643.sol       # Mock RWA tokens for testing
 │   ├── Praxos.sol             # ERC-4626 vault implementation
 │   └── PraxosFactory.sol     # Vault factory contract
-├── script/
-│   └── Deploy.s.sol              # Deployment script
-├── src/test/
-│   └── Praxos.t.sol         # Foundry tests
+├── scripts/
+│   └── deploy.js                  # Hardhat deployment script
+├── test/
+│   └── Praxos.test.js             # Hardhat/Mocha tests
 ├── offchain/
 │   ├── simulation/
 │   │   └── risk_model.py         # Risk simulation layer
@@ -305,12 +314,14 @@ praxos/
 
 ```bash
 make build
+# Or: npx hardhat compile
 ```
 
 ### Test
 
 ```bash
 make test
+# Or: npx hardhat test
 ```
 
 ### Generate Vault Strategies

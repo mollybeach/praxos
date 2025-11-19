@@ -6,6 +6,19 @@ const nextConfig = {
     images: {
         unoptimized: true,
     },
+    // Turbopack configuration for Vercel deployments
+    experimental: {
+        turbo: {
+            resolveAlias: {
+                // Prevent importing test files and problematic modules
+                './test': false,
+                './test/': false,
+                './bench': false,
+                './bench.js': false,
+            },
+            resolveExtensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+        },
+    },
     webpack: (config, {
         webpack
     }) => {

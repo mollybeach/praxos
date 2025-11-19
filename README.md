@@ -4,9 +4,9 @@
 
 ## Overview
 
-Praxos is a vault-generation engine that turns regulated financial products (RWAs) issued by institutions on Rayls private nodes into AI-assembled ERC-4626 vaults.
+Praxos is a complete system for tokenizing Real-World Assets (RWAs), managing them in yield-bearing vaults, and providing personalized vault suggestions to users via an AI agent.
 
-Each institution (Bank A, Bank B, Bank C, etc.) operates a private Rayls node and issues ERC-3643-compliant RWA tokens (bonds, real-estate funds, startup funds, etc.). Praxos analyzes these RWAs, simulates risk profiles, and passes the results into an AI allocation engine that constructs ERC-4626 vault strategies.
+The system flow: Financial institutions (Bank A, B, C, etc.) issue financial products (bonds, real-estate funds, startup funds) on private Rayls nodes. These products are tokenized into ERC-3643 compliant tokens via a Tokenization Engine. The Praxos AI Engine then analyzes these tokenized RWAs, performs risk analysis and allocation optimization, and creates diversified ERC-4626 yield-bearing vaults. Finally, the Praxos AI Agent provides personalized vault suggestions to users based on their timeframe, risk tolerance, and investment amount.
 
 These vaults act like "honey cells" in a honeycomb — modular financial building blocks that users can choose from depending on risk, duration, and diversification.
 
@@ -43,38 +43,89 @@ Users want:
 
 ## Architecture
 
+For a detailed system flowchart, see [PraxosFlowchart.md](./PraxosFlowchart.md).
+
 ```mermaid
 flowchart TD
-    subgraph N1[Bank A<br>Private Node]
-        A1[Bond 1<br>ERC-3643 RWA]
+    subgraph Banks["Private Nodes - Financial Institutions"]
+        BankA["Bank A"]
+        BankB["Bank B"]
+        BankC["Bank C"]
     end
 
-    subgraph N2[Bank B<br>Private Node]
-        B1[Real Estate Fund<br>ERC-3643 RWA]
+    subgraph RWA_A["Bank A RWAs<br/>Financial Products"]
+        BondA1["Bond 1"]
+        RealEstateA1["Realestate fund 1"]
+        StartupA1["Startup Fund 1"]
     end
 
-    subgraph N3[Bank C<br>Private Node]
-        C1[Startup Fund<br>ERC-3643 RWA]
+    subgraph RWA_B["Bank B RWAs<br/>Financial Products"]
+        BondB2["Bond 2"]
+        RealEstateB2["Realestate fund 2"]
+        StartupB2["Startup Fund 2"]
     end
 
-    A1 --> S[Simulation Layer<br>Risk, Liquidity, Duration Modeling]
-    B1 --> S
-    C1 --> S
+    subgraph RWA_C["Bank C RWAs<br/>Financial Products"]
+        BondC3["Bond 3"]
+        RealEstateC3["Realestate fund 3"]
+        StartupC3["Startup Fund 3"]
+    end
 
-    S --> AI[AI Allocation Engine<br>Strategy Construction]
+    TokenEngine["Tokenization Engine<br/>ERC-3643 Token Creation"]
+    
+    subgraph Tokenized["Tokenized RWAs<br/>ERC-3643 Tokens"]
+        TokenA1["Bond 1<br/>ERC-3643"]
+        TokenA2["Realestate fund 1<br/>ERC-3643"]
+        TokenA3["Startup Fund 1<br/>ERC-3643"]
+        TokenB1["Bond 2<br/>ERC-3643"]
+        TokenB2["Realestate fund 2<br/>ERC-3643"]
+        TokenB3["Startup Fund 2<br/>ERC-3643"]
+        TokenC1["Bond 3<br/>ERC-3643"]
+        TokenC2["Realestate fund 3<br/>ERC-3643"]
+        TokenC3["Startup Fund 3<br/>ERC-3643"]
+    end
 
-    AI --> VGen[Praxos Vault Generator<br>ERC-4626 Smart Contracts]
+    AIEngine["Praxos AI Engine<br/>Risk Analysis & Allocation"]
 
-    VGen --> HV[Praxos Structured Vaults<br>User-Selectable Products]
+    subgraph Vaults["ERC-4626 Yield-Bearing Vaults"]
+        VaultA["Vault A<br/>• Bond 1 (Bank A)<br/>• Bond 2 (Bank B)<br/>• Startup Fund 3 (Bank C)"]
+        VaultB["Vault B<br/>• Realestate fund 2 (Bank B)<br/>• Realestate fund 3 (Bank C)<br/>• Bond 1 (Bank A)<br/>• Bond 2 (Bank B)"]
+        VaultC["Vault C<br/>• Startup Fund 2 (Bank B)<br/>• Startup Fund 3 (Bank C)"]
+    end
 
-    HV --> U[Users Deposit<br>Diversified Exposure]
+    AIAgent["Praxos AI Agent<br/>Personalized Vault Suggestions<br/><br/>Based on:<br/>• Timeframe<br/>• Risk tolerance<br/>• Amount"]
+
+    Users["Users<br/>Get Personalized Vault Suggestions"]
+
+    BankA --> RWA_A
+    BankB --> RWA_B
+    BankC --> RWA_C
+
+    RWA_A --> TokenEngine
+    RWA_B --> TokenEngine
+    RWA_C --> TokenEngine
+
+    TokenEngine --> Tokenized
+
+    Tokenized --> AIEngine
+
+    AIEngine --> Vaults
+
+    Vaults <--> AIAgent
+    Users --> AIAgent
+    AIAgent --> Users
+
+    style AIEngine fill:#90EE90
+    style AIAgent fill:#90EE90
+    style TokenEngine fill:#87CEEB
+    style Vaults fill:#FFD700
 ```
 
 ## System Breakdown
 
-### 1. Private Node Layer (Institutions)
+### 1. Private Node Layer (Financial Institutions)
 
-Each participating bank runs a private Rayls node, issuing ERC-3643 RWAs such as:
+Each participating bank (Bank A, Bank B, Bank C, etc.) runs a private Rayls node, issuing financial products such as:
 
 - corporate bonds
 - real-estate investment products
@@ -84,9 +135,22 @@ Each participating bank runs a private Rayls node, issuing ERC-3643 RWAs such as
 
 Each product includes identity gating, transfer restrictions, and compliance enforcement.
 
-### 2. Simulation Layer
+### 2. Tokenization Engine
 
-Praxos models each ERC-3643 product by simulating:
+The Tokenization Engine converts financial products into **ERC-3643 compliant tokens**, enabling blockchain-based representation of real-world assets.
+
+- Takes raw financial products from institutions
+- Converts them to ERC-3643 standard tokens
+- Example: "Financial product Bond 1" → "ERC-3643 Token Bond 1"
+- Enables composability and interoperability on-chain
+
+### 3. Tokenized RWAs
+
+All financial products are tokenized as **ERC-3643 tokens**, creating a standardized on-chain representation of real-world assets from multiple institutions.
+
+### 4. Risk Simulation Layer
+
+Praxos models each ERC-3643 tokenized product by simulating:
 
 - yield curves
 - credit/default risk
@@ -97,41 +161,58 @@ Praxos models each ERC-3643 product by simulating:
 
 Outputs a standardized risk signature per product.
 
-### 3. AI Allocation Engine
+### 5. Praxos AI Engine
 
-The AI takes all risk signatures and constructs optimal vault strategies by considering:
+The Praxos AI Engine processes tokenized RWAs and performs:
 
-- risk tiers
-- duration buckets
-- diversification needs
-- regulatory constraints
-- modeled performance scenarios
+- **Risk Analysis**: Evaluates risk profiles for all tokenized assets
+- **Allocation Optimization**: Constructs optimal vault strategies by considering:
+  - risk tiers
+  - duration buckets
+  - diversification needs
+  - regulatory constraints
+  - modeled performance scenarios
 
-Produces a set of vault candidates.
+Produces a set of vault candidates with optimal asset allocations.
 
-### 4. ERC-4626 Vault Generator
+### 6. ERC-4626 Yield-Bearing Vaults
 
 Each AI-created strategy is compiled into a deployable ERC-4626 Vault, ready for deposits.
 
 These vaults are:
 
-- compliant
-- structured
+- compliant with ERC-4626 standard
+- structured and diversified
 - composed of multiple ERC-3643 RWAs
-- dynamically generated
-- optimized for diversification
+- dynamically generated by the AI
+- optimized for risk-adjusted returns
 
-### 5. Praxos User Interface
+Example vaults:
+- **Vault A**: Bond 1 (Bank A), Bond 2 (Bank B), Startup Fund 3 (Bank C)
+- **Vault B**: Realestate fund 2 (Bank B), Realestate fund 3 (Bank C), Bond 1 (Bank A), Bond 2 (Bank B)
+- **Vault C**: Startup Fund 2 (Bank B), Startup Fund 3 (Bank C)
 
-Users see the vaults created by the AI, such as:
+### 7. Praxos AI Agent
 
-- conservative short-term vault
-- real-estate heavy vault
-- startup exposure vault
-- balanced diversified vault
-- high-yield long-term vault
+The Praxos AI Agent provides **personalized vault suggestions** to users based on:
 
-Each vault is represented as an ERC-4626 contract containing a honeycomb of ERC-3643 assets.
+- **Timeframe**: Investment duration preferences (short-term, medium-term, long-term)
+- **Risk tolerance**: User's risk appetite (conservative to aggressive)
+- **Amount**: Investment size and constraints
+
+The AI Agent analyzes available vaults and matches them to user preferences, enabling informed investment decisions.
+
+### 8. User Interface
+
+Users interact with Praxos through the web interface, where they can:
+
+- View available vaults created by the AI
+- Receive personalized recommendations from the Praxos AI Agent
+- Deposit into vaults
+- Monitor their investments
+- Withdraw when needed
+
+Each vault is represented as an ERC-4626 contract containing a diversified portfolio of ERC-3643 assets.
 
 ## Getting Started
 
@@ -182,7 +263,9 @@ praxos/
 │   ├── simulation/
 │   │   └── risk_model.py         # Risk simulation layer
 │   ├── ai_engine/
-│   │   └── allocation_engine.py   # AI allocation engine
+│   │   └── allocation_engine.py   # Praxos AI Engine (risk analysis & allocation)
+│   ├── ai_agent/
+│   │   └── suggestion_engine.py  # Praxos AI Agent (personalized suggestions)
 │   └── vault_generator.py         # Main orchestrator
 ├── frontend/
 │   ├── index.html                # Web interface
@@ -204,9 +287,11 @@ praxos/
 
 ### Off-Chain Components
 
+- **Tokenization Engine**: Converts financial products into ERC-3643 compliant tokens (handled by institutions on private nodes)
 - **Risk Simulation Layer**: Models risk profiles for RWA tokens (credit score, volatility, liquidity, etc.)
-- **AI Allocation Engine**: Constructs optimal vault strategies based on risk signatures
-- **Vault Generator**: Orchestrates the full pipeline from RWA tokens to deployable vault configs
+- **Praxos AI Engine**: Performs risk analysis and constructs optimal vault strategies based on risk signatures
+- **Vault Generator**: Orchestrates the full pipeline from tokenized RWAs to deployable vault configs
+- **Praxos AI Agent**: Provides personalized vault suggestions to users based on timeframe, risk tolerance, and investment amount
 
 ### Frontend
 

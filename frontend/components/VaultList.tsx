@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useWeb3 } from '@/contexts/Web3Context';
-import { loadVaults } from '@/lib/web3';
+import { loadVaults, getReadOnlyProvider } from '@/lib/web3';
 import { VaultCard } from './VaultCard';
 import type { VaultInfo } from '@/types';
 
@@ -17,14 +17,18 @@ export function VaultList({ factoryAddress }: VaultListProps) {
   const [error, setError] = useState<string | null>(null);
 
   const fetchVaults = async () => {
-    if (!provider || !factoryAddress) return;
+    if (!factoryAddress) return;
 
     try {
       setLoading(true);
       setError(null);
-      const loadedVaults = await loadVaults(provider, factoryAddress, address || undefined);
+      
+      // Use connected provider if available, otherwise use read-only provider
+      const activeProvider = provider || getReadOnlyProvider();
+      const loadedVaults = await loadVaults(activeProvider, factoryAddress, address || undefined);
       setVaults(loadedVaults);
     } catch (err: any) {
+      console.error('Error loading vaults:', err);
       setError(err.message || 'Failed to load vaults');
     } finally {
       setLoading(false);
@@ -32,7 +36,7 @@ export function VaultList({ factoryAddress }: VaultListProps) {
   };
 
   useEffect(() => {
-    if (provider && factoryAddress) {
+    if (factoryAddress) {
       fetchVaults();
     }
   }, [provider, factoryAddress, address]);

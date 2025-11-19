@@ -43,7 +43,7 @@ Users want:
 
 ## Architecture
 
-For a detailed system flowchart, see [PraxosFlowchart.md](./PraxosFlowchart.md).
+For a detailed system flowchart, see [docs/PraxosFlowchart.md](./docs/PraxosFlowchart.md).
 
 ```mermaid
 flowchart TD
@@ -218,7 +218,7 @@ Each vault is represented as an ERC-4626 contract containing a diversified portf
 
 ### Quick Start
 
-See [QUICKSTART.md](./QUICKSTART.md) for a 5-minute setup guide.
+See [docs/QUICKSTART.md](./docs/QUICKSTART.md) for a 5-minute setup guide.
 
 ### Installation
 
@@ -248,51 +248,72 @@ See [QUICKSTART.md](./QUICKSTART.md) for a 5-minute setup guide.
    
    # Deploy contracts
    make deploy
-   # Or manually: npx hardhat run scripts/deploy.js --network rayls_devnet
+   # Or manually: npx hardhat run scripts/deploy.mjs --network rayls_devnet
    ```
 
-See [SETUP.md](./SETUP.md) for detailed setup instructions.
+See [docs/SETUP.md](./docs/SETUP.md) for detailed setup instructions.
 
 ## Project Structure
 
 ```
 praxos/
-├── src/
+├── contracts/
 │   ├── interfaces/
 │   │   └── IERC3643.sol          # ERC-3643 RWA interface
 │   ├── mocks/
-│   │   └── MockERC3643.sol       # Mock RWA tokens for testing
-│   ├── Praxos.sol             # ERC-4626 vault implementation
-│   └── PraxosFactory.sol     # Vault factory contract
+│   │   ├── MockERC20.sol         # Mock ERC20 token for testing
+│   │   ├── MockERC3643.sol       # Mock ERC-3643 RWA tokens for testing
+│   │   └── MockUSDC.sol          # Mock USDC for deployment
+│   ├── PraxosVault.sol           # ERC-4626 vault implementation
+│   └── PraxosFactory.sol         # Vault factory contract
 ├── scripts/
-│   └── deploy.js                  # Hardhat deployment script
+│   ├── deploy.mjs                # Hardhat deployment script
+│   ├── abi/
+│   │   ├── cleanAbi.mjs          # Clean ABI directory utility
+│   │   └── saveAbi.mjs           # Save contract ABIs utility
+│   ├── logs/
+│   │   ├── console_logger.mjs    # Console logging utilities
+│   │   └── data/
+│   │       └── data_logger.mjs   # Deployment history logging
+│   └── roles/
+│       └── assignRoles.mjs       # Role assignment utilities
 ├── test/
-│   └── Praxos.test.js             # Hardhat/Mocha tests
+│   └── Praxos.test.js            # Hardhat/Mocha tests
 ├── offchain/
 │   ├── simulation/
 │   │   └── risk_model.py         # Risk simulation layer
 │   ├── ai_engine/
-│   │   └── allocation_engine.py   # Praxos AI Engine (risk analysis & allocation)
+│   │   └── allocation_engine.py  # Praxos AI Engine (risk analysis & allocation)
 │   ├── ai_agent/
-│   │   └── suggestion_engine.py  # Praxos AI Agent (personalized suggestions)
-│   └── vault_generator.py         # Main orchestrator
+│   │   └── suggestion_engine.py # Praxos AI Agent (personalized suggestions)
+│   ├── vault_generator.py        # Main orchestrator
+│   └── requirements.txt           # Python dependencies
 ├── frontend/
 │   ├── index.html                # Web interface
 │   └── app.js                    # Frontend logic
-├── foundry.toml                  # Foundry configuration
-├── README.md
-├── SETUP.md                      # Detailed setup guide
-├── QUICKSTART.md                 # Quick start guide
-└── HACKATHON_RULES.md           # Rayls hackathon rules
+├── docs/
+│   ├── HACKATHON_RULES.md        # Rayls hackathon rules
+│   ├── PraxosFlowchart.md        # System architecture flowchart
+│   ├── QUICKSTART.md             # Quick start guide
+│   └── SETUP.md                  # Detailed setup guide
+├── abi/                          # Generated contract ABIs (auto-generated)
+├── deployments/                  # Deployment history logs (auto-generated)
+├── hardhat.config.js             # Hardhat configuration
+├── package.json                  # Node.js dependencies
+├── Makefile                      # Build automation
+├── .env.example                  # Environment variables template
+└── README.md                     # This file
 ```
 
 ## Key Components
 
 ### Smart Contracts
 
-- **`Praxos.sol`**: ERC-4626 compliant vault that holds multiple ERC-3643 RWA tokens
+- **`PraxosVault.sol`**: ERC-4626 compliant vault that holds multiple ERC-3643 RWA tokens
 - **`PraxosFactory.sol`**: Factory contract for deploying vaults from AI-generated strategies
 - **`MockERC3643.sol`**: Mock implementation of ERC-3643 for testing and demos
+- **`MockERC20.sol`**: Mock ERC20 token for testing
+- **`MockUSDC.sol`**: Mock USDC token for deployment scripts
 
 ### Off-Chain Components
 
@@ -340,7 +361,7 @@ Praxos is built for the **Rayls ecosystem**:
 - **Gas Token**: USDgas (USDr)
 - **Explorer**: `https://devnet-explorer.rayls.com`
 
-See [HACKATHON_RULES.md](./HACKATHON_RULES.md) for hackathon requirements.
+See [docs/HACKATHON_RULES.md](./docs/HACKATHON_RULES.md) for hackathon requirements.
 
 ## License
 

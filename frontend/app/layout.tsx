@@ -5,6 +5,7 @@ import '@rainbow-me/rainbowkit/styles.css'
 import './globals.css'
 import { Web3Providers } from '@/components/web3-providers'
 import { ThemeProvider } from '@/components/theme-provider'
+import { Toaster } from '@/components/ui/toaster'
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
@@ -36,6 +37,7 @@ export default function RootLayout({
             {children}
           </Web3Providers>
         </ThemeProvider>
+        <Toaster />
         <Analytics />
       </body>
     </html>

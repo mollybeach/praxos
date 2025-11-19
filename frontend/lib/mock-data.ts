@@ -16,6 +16,7 @@ export interface Vault {
   apr: number
   matchPercentage: number
   isNew?: boolean
+  vaultAddress?: string
   assets: Asset[]
 }
 

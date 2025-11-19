@@ -1,19 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo, useEffect } from "react"
+import { useAccount, useReadContract, useChainId } from "wagmi"
+import { formatUnits } from "viem"
+import { raylsTestnet } from "@/lib/wagmi"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Loader2, Sparkles, Search, Check, Info, X } from 'lucide-react'
+import { Loader2, Sparkles, Search, X, Wallet } from 'lucide-react'
 import { VaultCard } from "./vault-card"
-import { mockVaults } from "@/lib/mock-data"
+import { type Vault } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
-import { useVaults } from "@/lib/hooks/use-vaults"
-import { vaultInfoToVault } from "@/lib/vault-utils"
-import { useAccount } from "wagmi"
 
 const CATEGORIES = [
   { id: "tbill", name: "T-Bill", description: "Short-term US Gov debt" },
@@ -27,23 +27,19 @@ const CATEGORIES = [
   { id: "vc-pe", name: "VC/PE Funds", description: "Private equity & startups" },
 ]
 
+type Category = { id: string; name: string; description: string }
+
 export function PraxosDashboard() {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const { address, isConnected } = useAccount()
+  const chainId = useChainId()
+  const { toast } = useToast()
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [riskLevel, setRiskLevel] = useState([2])
   const [amount, setAmount] = useState("1000")
   const [timeframe, setTimeframe] = useState("6m")
   const [isGenerating, setIsGenerating] = useState(false)
   const [showResults, setShowResults] = useState(false)
-  
-  // Load vaults from blockchain
-  const { vaults: blockchainVaults, isLoading: isLoadingVaults } = useVaults()
-  const { isConnected } = useAccount()
-  
-  // Convert blockchain vaults to UI format, fallback to mock data
-  const displayVaults = blockchainVaults.length > 0
-    ? blockchainVaults.map((v, i) => vaultInfoToVault(v, i))
-    : mockVaults
 
   const toggleCategory = (category: string) => {
     setSelectedCategories((prev) =>
@@ -55,18 +51,24 @@ export function PraxosDashboard() {
     const visibleCategories = CATEGORIES.filter(c => 
       c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
       c.description.toLowerCase().includes(searchQuery.toLowerCase())
-    ).map(c => c.name)
+    )
 
-    const allVisibleSelected = visibleCategories.every(c => selectedCategories.includes(c))
+    const allVisibleSelected = visibleCategories.every(c => 
+      selectedCategories.some(selected => selected.id === c.id)
+    )
 
     if (allVisibleSelected) {
       // Deselect all visible
-      setSelectedCategories(prev => prev.filter(c => !visibleCategories.includes(c)))
+      setSelectedCategories(prev => 
+        prev.filter(selected => !visibleCategories.some(visible => visible.id === selected.id))
+      )
     } else {
       // Select all visible
       const newSelected = [...selectedCategories]
       visibleCategories.forEach(c => {
-        if (!newSelected.includes(c)) newSelected.push(c)
+        if (!newSelected.some(selected => selected.id === c.id)) {
+          newSelected.push(c)
+        }
       })
       setSelectedCategories(newSelected)
     }
@@ -77,14 +79,92 @@ export function PraxosDashboard() {
     c.description.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleGenerate = () => {
+  const fetchVaults = async () => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
+    if (!apiUrl) {
+      throw new Error("API URL is not configured")
+    }
+
+    if (!isConnected || !address) {
+      throw new Error("Please connect your wallet first")
+    }
+
+    const requestBody = {
+      categories: selectedCategories.map(cat => ({ id: cat.id, name: cat.name })),
+      address: address,
+      amount: amount,
+      riskLevel: riskLevel[0],
+      timeframe: timeframe,
+    }
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    })
+
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    
+    // Log full API response for debugging
+    console.log("Full API Response:", JSON.stringify(data, null, 2))
+    
+    // Handle direct array response: [vault1, vault2, ...]
+    if (Array.isArray(data)) {
+      // Check if it's a direct array of vaults
+      if (data.length > 0 && typeof data[0] === 'object' && data[0] !== null && 'id' in data[0] && 'name' in data[0]) {
+        return data as Vault[]
+      }
+      
+      // Handle nested response structure: [{ "vaults": [vaults...] }]
+      if (data.length > 0) {
+        const firstItem = data[0]
+        if (typeof firstItem === 'object' && firstItem !== null) {
+          // Get the value of the "vaults" key
+          if ("vaults" in firstItem && Array.isArray(firstItem.vaults)) {
+            return firstItem.vaults as Vault[]
+          }
+          // Fallback: try to find any array value in the object
+          const arrayValue = Object.values(firstItem).find(val => Array.isArray(val))
+          if (arrayValue) {
+            return arrayValue as Vault[]
+          }
+        }
+      }
+    }
+    
+    throw new Error("Unexpected API response format")
+  }
+
+  const handleGenerate = async () => {
     setIsGenerating(true)
     setShowResults(false)
-    // Simulate API call
-    setTimeout(() => {
+
+    try {
+      const vaultData = await fetchVaults()
+      setVaults(vaultData)
       setIsGenerating(false)
       setShowResults(true)
-    }, 1500)
+    } catch (error) {
+      setIsGenerating(false)
+      const errorMessage = error instanceof Error ? error.message : "Failed to fetch vaults"
+      
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+        action: (
+          <ToastAction altText="Retry" onClick={handleGenerate}>
+            Retry
+          </ToastAction>
+        ),
+      })
+    }
   }
 
   const getRiskLabel = (val: number) => {
@@ -126,7 +206,7 @@ export function PraxosDashboard() {
                     onClick={handleSelectAll}
                     className="text-xs text-primary hover:text-primary/80 transition-colors"
                   >
-                    {filteredCategories.every(c => selectedCategories.includes(c.name)) && filteredCategories.length > 0
+                    {filteredCategories.every(c => selectedCategories.some(selected => selected.id === c.id)) && filteredCategories.length > 0
                       ? "Deselect All" 
                       : "Select All"}
                   </button>
@@ -153,11 +233,11 @@ export function PraxosDashboard() {
 
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 max-h-[300px] overflow-hidden pr-1 custom-scrollbar">
                 {filteredCategories.map((category) => {
-                  const isSelected = selectedCategories.includes(category.name)
+                  const isSelected = selectedCategories.some(selected => selected.id === category.id)
                   return (
                     <button
                       key={category.id}
-                      onClick={() => toggleCategory(category.name)}
+                      onClick={() => toggleCategory(category)}
                       className={cn(
                         "group relative flex flex-col items-start justify-center rounded-lg border px-3 py-2.5 text-left transition-all duration-200 h-full",
                         isSelected
@@ -215,7 +295,28 @@ export function PraxosDashboard() {
 
             {/* Capital & Timeframe */}
             <div className="space-y-3">
-              <label className="text-sm font-medium">Capital Committed</label>
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium">Capital Committed</label>
+                {isConnected && (
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Wallet className="h-3 w-3" />
+                    <span>
+                      Balance:{" "}
+                      {!usdcAddress ? (
+                        <span className="text-destructive">USDC address not configured</span>
+                      ) : chainId !== raylsTestnet.id ? (
+                        <span className="text-destructive">Wrong network</span>
+                      ) : isLoadingBalance ? (
+                        <Loader2 className="inline h-3 w-3 animate-spin" />
+                      ) : balanceError ? (
+                        <span className="text-destructive">Error loading balance</span>
+                      ) : (
+                        <span className="font-medium text-foreground">{formattedBalance} USDC</span>
+                      )}
+                    </span>
+                  </div>
+                )}
+              </div>
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   <span className="absolute left-3 top-2.5 text-xs font-medium text-muted-foreground">USDC</span>
@@ -245,7 +346,7 @@ export function PraxosDashboard() {
               className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_20px_rgba(74,222,128,0.2)]" 
               size="lg"
               onClick={handleGenerate}
-              disabled={isGenerating}
+              disabled={isGenerating || !isConnected}
             >
               {isGenerating ? (
                 <>
@@ -256,11 +357,6 @@ export function PraxosDashboard() {
                 "Find Vaults"
               )}
             </Button>
-            
-            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-               <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-               <span>Accuracy Mode Active</span>
-            </div>
           </CardContent>
         </Card>
       </div>
@@ -297,17 +393,10 @@ export function PraxosDashboard() {
           <div className="space-y-4">
             <div className="flex items-center justify-between animate-in fade-in slide-in-from-bottom-4 duration-500">
               <h2 className="text-xl font-semibold">Recommended Vaults</h2>
-              <div className="flex items-center gap-2">
-                {blockchainVaults.length > 0 && (
-                  <span className="text-xs text-primary bg-primary/10 px-2 py-1 rounded-full">
-                    On-Chain
-                  </span>
-                )}
-                <span className="text-sm text-muted-foreground">Found {displayVaults.length} matches</span>
-              </div>
+              <span className="text-sm text-muted-foreground">Found {mockVaults.length} matches</span>
             </div>
             <div className="grid gap-4">
-              {displayVaults.map((vault, index) => (
+              {mockVaults.map((vault, index) => (
                 <div 
                   key={vault.id} 
                   className="animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both"

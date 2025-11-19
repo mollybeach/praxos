@@ -34,6 +34,7 @@ const navMain = [
         title: "Portfolio",
         url: "/portfolio",
         icon: PieChart,
+        badge: "Soon",
       },
       {
         title: "Trading",
@@ -44,6 +45,7 @@ const navMain = [
         title: "Watchlist",
         url: "/watchlist",
         icon: Eye,
+        badge: "Soon",
       },
     ],
   },

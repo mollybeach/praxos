@@ -61,8 +61,12 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
             </li>
             <li>
               <button
-                disabled
-                className="w-full text-left px-3 py-2 rounded-lg text-slate-500 cursor-not-allowed flex items-center justify-between"
+                onClick={() => onSectionChange('trading')}
+                className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between ${
+                  activeSection === 'trading'
+                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                    : 'text-slate-300 hover:bg-slate-800'
+                }`}
               >
                 <span>Trading</span>
                 <span className="text-xs bg-slate-800 px-2 py-0.5 rounded">Soon</span>
@@ -70,8 +74,12 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
             </li>
             <li>
               <button
-                disabled
-                className="w-full text-left px-3 py-2 rounded-lg text-slate-500 cursor-not-allowed flex items-center justify-between"
+                onClick={() => onSectionChange('watchlist')}
+                className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between ${
+                  activeSection === 'watchlist'
+                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                    : 'text-slate-300 hover:bg-slate-800'
+                }`}
               >
                 <span>Watchlist</span>
                 <span className="text-xs bg-slate-800 px-2 py-0.5 rounded">Soon</span>
@@ -87,8 +95,12 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
           <ul className="space-y-1">
             <li>
               <button
-                disabled
-                className="w-full text-left px-3 py-2 rounded-lg text-slate-500 cursor-not-allowed flex items-center justify-between"
+                onClick={() => onSectionChange('academy')}
+                className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between ${
+                  activeSection === 'academy'
+                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                    : 'text-slate-300 hover:bg-slate-800'
+                }`}
               >
                 <span>Academy</span>
                 <span className="text-xs bg-slate-800 px-2 py-0.5 rounded">Soon</span>
@@ -104,8 +116,12 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
           <ul className="space-y-1">
             <li>
               <button
-                disabled
-                className="w-full text-left px-3 py-2 rounded-lg text-slate-500 cursor-not-allowed flex items-center justify-between"
+                onClick={() => onSectionChange('profile')}
+                className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between ${
+                  activeSection === 'profile'
+                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                    : 'text-slate-300 hover:bg-slate-800'
+                }`}
               >
                 <span>Profile</span>
                 <span className="text-xs bg-slate-800 px-2 py-0.5 rounded">Soon</span>
@@ -113,8 +129,12 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
             </li>
             <li>
               <button
-                disabled
-                className="w-full text-left px-3 py-2 rounded-lg text-slate-500 cursor-not-allowed flex items-center justify-between"
+                onClick={() => onSectionChange('wallet')}
+                className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between ${
+                  activeSection === 'wallet'
+                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                    : 'text-slate-300 hover:bg-slate-800'
+                }`}
               >
                 <span>Wallet</span>
                 <span className="text-xs bg-slate-800 px-2 py-0.5 rounded">Soon</span>

@@ -3,9 +3,15 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Sidebar } from '@/components/Sidebar';
-import { FindVaultsPanel, type VaultPreferences } from '@/components/FindVaultsPanel';
-import { RecommendedVaultsPanel } from '@/components/RecommendedVaultsPanel';
 import { WalletButton } from '@/components/WalletButton';
+import { DashboardPage } from '@/components/pages/DashboardPage';
+import { PortfolioPage } from '@/components/pages/PortfolioPage';
+import { TradingPage } from '@/components/pages/TradingPage';
+import { WatchlistPage } from '@/components/pages/WatchlistPage';
+import { AcademyPage } from '@/components/pages/AcademyPage';
+import { ProfilePage } from '@/components/pages/ProfilePage';
+import { WalletPage } from '@/components/pages/WalletPage';
+import type { VaultPreferences } from '@/components/FindVaultsPanel';
 import type { Vault } from '@/types';
 
 export default function Home() {
@@ -92,7 +98,7 @@ export default function Home() {
                   className="object-cover"
                 />
               </div>
-              <h1 className="text-xl font-bold text-white">Dashboard</h1>
+              <h1 className="text-xl font-bold text-white capitalize">{activeSection === 'dashboard' ? 'Dashboard' : activeSection}</h1>
             </div>
             <div className="flex items-center gap-4">
               <div className="text-sm text-slate-400">
@@ -105,23 +111,21 @@ export default function Home() {
 
         {/* Main Content Area */}
         <main className="flex-1 p-4 md:p-6 overflow-y-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 max-w-7xl mx-auto">
-            {/* Left Panel - Find Vaults */}
-            <div>
-              <FindVaultsPanel onFindVaults={handleFindVaults} />
-            </div>
-
-            {/* Right Panel - Recommended Vaults */}
-            <div>
-              <RecommendedVaultsPanel
-                vaults={recommendedVaults}
-                onDepositSuccess={() => {
-                  // Refresh vault list after deposit
-                  console.log('Deposit successful');
-                }}
-              />
-            </div>
-          </div>
+          {activeSection === 'dashboard' && (
+            <DashboardPage
+              onFindVaults={handleFindVaults}
+              recommendedVaults={recommendedVaults}
+              onDepositSuccess={() => {
+                console.log('Deposit successful');
+              }}
+            />
+          )}
+          {activeSection === 'portfolio' && <PortfolioPage />}
+          {activeSection === 'trading' && <TradingPage />}
+          {activeSection === 'watchlist' && <WatchlistPage />}
+          {activeSection === 'academy' && <AcademyPage />}
+          {activeSection === 'profile' && <ProfilePage />}
+          {activeSection === 'wallet' && <WalletPage />}
         </main>
       </div>
     </div>

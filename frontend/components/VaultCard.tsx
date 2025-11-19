@@ -36,8 +36,9 @@ export function VaultCard({ vault, onDepositSuccess }: VaultCardProps) {
       await tx.wait();
       setDepositAmount('');
       onDepositSuccess?.();
-    } catch (err: any) {
-      setError(err.message || 'Deposit failed');
+    } catch (err: unknown) {
+      const error = err as { message?: string };
+      setError(error.message || 'Deposit failed');
     } finally {
       setIsDepositing(false);
     }

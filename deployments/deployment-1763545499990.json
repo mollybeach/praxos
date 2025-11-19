@@ -1,0 +1,54 @@
+{
+  "deploymentId": "1763545499990",
+  "deployedBy": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "networkName": "hardhat",
+  "chainId": "1337",
+  "explorerUrl": "https://devnet-explorer.rayls.com",
+  "deployedAt": "2025-11-19T09:44:59.990Z",
+  "deploymentType": "PRAXOS_VAULT_SYSTEM",
+  "contracts": {
+    "PraxosFactory": {
+      "name": "PraxosFactory",
+      "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "explorerUrl": "https://devnet-explorer.rayls.com/address/0x5FbDB2315678afecb367f032d93F642f64180aa3"
+    },
+    "MockUSDC": {
+      "name": "MockUSDC",
+      "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      "explorerUrl": "https://devnet-explorer.rayls.com/address/0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+    },
+    "CorporateBondAlpha": {
+      "name": "Corporate Bond Alpha",
+      "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      "explorerUrl": "https://devnet-explorer.rayls.com/address/0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+    },
+    "RealEstateFundBeta": {
+      "name": "Real Estate Fund Beta",
+      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "explorerUrl": "https://devnet-explorer.rayls.com/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+    },
+    "StartupFundGamma": {
+      "name": "Startup Fund Gamma",
+      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      "explorerUrl": "https://devnet-explorer.rayls.com/address/0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+    },
+    "DemoVault": {
+      "name": "Balanced Diversified Vault",
+      "address": "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be",
+      "explorerUrl": "https://devnet-explorer.rayls.com/address/0xa16E02E87b7454126E5E10d957A927A7F5B5d2be"
+    }
+  },
+  "configuration": {
+    "vaultStrategy": "balanced-diversified",
+    "vaultRiskTier": 3,
+    "vaultTargetDuration": 94608000,
+    "vaultWeights": [
+      4000,
+      4000,
+      2000
+    ],
+    "bondYield": 500,
+    "realEstateYield": 700,
+    "startupYield": 1500
+  }
+}

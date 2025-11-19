@@ -7,7 +7,7 @@ Orchestrates the full pipeline: simulation -> AI allocation -> vault deployment
 import json
 from typing import List, Dict
 from simulation.risk_model import RiskSimulator, RiskSignature
-from ai_engine.allocation_engine import AIAllocationEngine, VaultStrategy
+from ai_engine.allocation_engine import PraxosAIEngine, VaultStrategy
 
 
 class VaultGenerator:
@@ -15,7 +15,7 @@ class VaultGenerator:
     
     def __init__(self):
         self.risk_simulator = RiskSimulator()
-        self.ai_engine = AIAllocationEngine(self.risk_simulator)
+        self.ai_engine = PraxosAIEngine(self.risk_simulator)
         self.generated_vaults: List[Dict] = []
     
     def process_rwa_tokens(

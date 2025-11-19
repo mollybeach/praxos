@@ -1,4 +1,4 @@
-.PHONY: install build test deploy clean
+.PHONY: install build test deploy clean check-balance
 
 install:
 	npm install
@@ -10,9 +10,12 @@ test:
 	npx hardhat test
 
 deploy:
-	npx hardhat run scripts/deploy.js --network rayls_devnet
+	npx hardhat run scripts/deploy.mjs --network rayls_devnet
 
 clean:
 	npx hardhat clean
 	rm -rf node_modules
+
+check-balance:
+	npx hardhat run scripts/check/checkBalance.mjs --network rayls_devnet
 

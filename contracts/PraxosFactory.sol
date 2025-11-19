@@ -65,14 +65,14 @@ contract PraxosFactory is Ownable {
         isVault[vault] = true;
         allVaults.push(vault);
         
+        // Add assets to vault (factory is still owner at this point)
+        for (uint256 i = 0; i < config.assets.length; i++) {
+            newVault.addAsset(config.assets[i], config.weights[i]);
+        }
+        
         // Transfer ownership to creator (if different from factory owner)
         if (msg.sender != owner()) {
             newVault.transferOwnership(msg.sender);
-        }
-        
-        // Add assets to vault
-        for (uint256 i = 0; i < config.assets.length; i++) {
-            newVault.addAsset(config.assets[i], config.weights[i]);
         }
         
         emit VaultCreated(vault, msg.sender, config.strategy, config.riskTier);
